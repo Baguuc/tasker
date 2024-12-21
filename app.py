@@ -23,3 +23,10 @@ else:
     time_str: str = ConsoleColor.color(f"{battery.time_left} hours", ConsoleColor.YELLOW)
 
     print(f"Battery {prct_str}, {time_str} of usage left.")
+
+print(ConsoleColor.color("Current task:", ConsoleColor.BOLD))
+current_task: Task = Task.get_current()
+print(f"{current_task.title}")
+for line in current_task.details:
+    print(f"{ConsoleColor.color('-', ConsoleColor.GREEN)} {line}")
+

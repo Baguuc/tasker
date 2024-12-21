@@ -1,7 +1,7 @@
 import json
 from typing import Self
 from pathlib import Path
-from scriptlib.color import ConsoleColor
+from scriptlib.console import ConsoleColor
 from dataclasses import dataclass
 
 TASKS_FILE_PATH: Path = Path("/home/baguuc/.todo_tasks")
@@ -11,6 +11,15 @@ class Task:
     title: str
     details: list[str]
     
+    def get_current() -> Self:
+        all_tasks: list[Task] = Task.get_all()
+
+        if len(all_tasks) == 0:
+            return Task("All done", [])
+
+        current_task: Task = all_tasks[0]
+
+        return current_task
     def get_all() -> list[Self]:
         tasks: list[Self] = []
 
