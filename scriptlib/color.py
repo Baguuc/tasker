@@ -8,3 +8,6 @@ class ConsoleColor:
     UNDERLINE: str = '\033[4m'
     BOLD: str = '\033[1m'
     ENDC: str = '\033[0m'
+
+    def color(s: str, color_code: str) -> str:
+        return f"{color_code}{s}{ConsoleColor.ENDC}"
