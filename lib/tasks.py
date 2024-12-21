@@ -15,7 +15,7 @@ class Task:
         all_tasks: list[Task] = Task.get_all()
 
         if len(all_tasks) == 0:
-            return Task("All done", [])
+            return Task("Chill out", [])
 
         current_task: Task = all_tasks[0]
 
