@@ -18,5 +18,13 @@ class Time:
         seconds -= minutes * SECS_IN_MINUTE
 
         return Time(seconds, minutes, hours)
+    
+    def from_minutes(minutes: int) -> Self:
+        seconds: int = minutes * SECS_IN_HOUR
 
+        return Self.from_seconds(seconds)
+    
+    def from_hours(hours: int) -> Self:
+        seconds: int = hours * SECS_IN_HOUR
+        return Self.from_seconds(seconds)
 
