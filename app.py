@@ -1,5 +1,5 @@
 from scriptlib.battery import BatteryInfo
-from scriptlib.color import ConsoleColor
+from scriptlib.console import ConsoleColor
 from scriptlib.tasks import Task
 import sys
 
