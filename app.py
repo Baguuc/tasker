@@ -5,10 +5,19 @@ import sys
 import os
 
 def main(argc, argv):
-    if argc >= 4 and argv[0] == "tasks" and argv[1] == "insert":
-        task: Task = Task(argv[2], argv[3:])
-        task.insert()
+    if argc == 2 and argv[0] == "tasks" and argv[1] == "insert":
+        title: str = input("Enter title of the task: ")
+        details: list[str] = []
 
+        while (line := input("Enter next line of details (leave blank to exit): ")) != "":
+           details.append(line)
+        
+        task: Task = Task(title, details)
+        task.insert()
+        
+        Console.clear()
+        main(0, [])
+        
         exit()
 
     elif argc == 2 and argv[0] == "tasks" and argv[1] == "done":
