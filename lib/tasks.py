@@ -10,6 +10,18 @@ TASKS_FILE_PATH: Path = Path("/home/baguuc/.todo_tasks")
 class Task:
     title: str
     details: list[str]
+
+    def mark_current_done():
+        all_tasks: list[Task] = Task.get_all()
+        try:
+            all_tasks.pop(0)
+        except:
+            pass
+        as_dict: list[dict] = list(map(lambda item: item.__dict__, all_tasks))
+
+        with open(TASKS_FILE_PATH, "w") as f:
+            dumped: str = json.dumps(as_dict)
+            f.write(dumped)
     
     def get_current() -> Self:
         all_tasks: list[Task] = Task.get_all()
@@ -20,6 +32,7 @@ class Task:
         current_task: Task = all_tasks[0]
 
         return current_task
+    
     def get_all() -> list[Self]:
         tasks: list[Self] = []
 
@@ -52,9 +65,7 @@ class Task:
         all_tasks: list[Self] = Task.get_all()
         all_tasks.append(self)
         as_dict: list[dict] = list(map(lambda item: item.__dict__, all_tasks))               
-        
         with open(TASKS_FILE_PATH, "w") as f:
             dumped: str = json.dumps(as_dict)
             f.write(dumped)
-
 

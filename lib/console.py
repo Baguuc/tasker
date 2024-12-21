@@ -1,5 +1,6 @@
-import subprocess
+import os
 import re
+import subprocess
 from enum import Enum, auto
 
 class ConsoleColor:
@@ -62,3 +63,7 @@ class Console:
             print(f"{pad}{s}")
 
             return
+    
+    def clear():
+        os.system('cls' if os.name == 'nt' else 'clear')
+
