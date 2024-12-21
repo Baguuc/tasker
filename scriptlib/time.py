@@ -27,4 +27,7 @@ class Time:
     def from_hours(hours: int) -> Self:
         seconds: int = hours * SECS_IN_HOUR
         return Self.from_seconds(seconds)
+    
+    def __str__(self) -> str:
+        return f"{self.hours}:{self.minutes}:{self.seconds}"
 
