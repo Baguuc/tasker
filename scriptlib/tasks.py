@@ -38,3 +38,14 @@ class Task:
             )
 
         return tasks
+
+    def insert(self):
+        all_tasks: list[Self] = Task.get_all()
+        all_tasks.append(self)
+        as_dict: list[dict] = list(map(lambda item: item.__dict__, all_tasks))               
+        
+        with open(TASKS_FILE_PATH, "w") as f:
+            dumped: str = json.dumps(as_dict)
+            f.write(dumped)
+
+

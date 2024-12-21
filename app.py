@@ -1,6 +1,17 @@
 from scriptlib.battery import BatteryInfo
 from scriptlib.color import ConsoleColor
-import psutil
+from scriptlib.tasks import Task
+import sys
+
+sys.argv.pop(0)
+argv: list[str] = sys.argv
+argc: int = len(sys.argv)
+
+if argc >= 4 and argv[0] == "tasks" and argv[1] == "insert":
+    task: Task = Task(argv[2], argv[3:])
+    task.insert()
+
+    exit()
 
 battery: BatteryInfo = BatteryInfo.get_data()
 
