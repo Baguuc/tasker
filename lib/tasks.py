@@ -1,7 +1,7 @@
 import json
 from typing import Self
 from pathlib import Path
-from scriptlib.console import ConsoleColor
+from lib.console import ConsoleColor
 from dataclasses import dataclass
 
 TASKS_FILE_PATH: Path = Path("/home/baguuc/.todo_tasks")

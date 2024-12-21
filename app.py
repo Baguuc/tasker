@@ -1,6 +1,6 @@
-from scriptlib.battery import BatteryInfo
-from scriptlib.console import ConsoleColor
-from scriptlib.tasks import Task
+from lib.battery import BatteryInfo
+from lib.console import ConsoleColor
+from lib.tasks import Task
 import sys
 
 sys.argv.pop(0)

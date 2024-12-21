@@ -1,7 +1,7 @@
 import psutil
 from typing import Self
 from dataclasses import dataclass
-from scriptlib.time import Time
+from lib.time import Time
 
 
 @dataclass
