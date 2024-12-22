@@ -39,16 +39,12 @@ def main(argc, argv):
 
     print()
 
-    Console.print_aligned(
-        ConsoleColor.color(
-            "Current task:",
-            ConsoleColor.BOLD
-        ),
-        Alignment.Center
-    )
     current_task: Task = Task.get_current()
     Console.print_aligned(
-        current_task.title,
+        ConsoleColor.color(
+            current_task.title,
+            [ConsoleColor.BOLD, ConsoleColor.YELLOW]
+        ),
         Alignment.Center
     )
     for line in current_task.details:
