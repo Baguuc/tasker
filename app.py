@@ -34,7 +34,7 @@ def main(argc, argv):
         Console.print_aligned(info_str, Alignment.Center)
     else:
         prct_str: str = ConsoleColor.color(f"{battery.percentage:.0f}%", ConsoleColor.YELLOW)
-        time_str: str = ConsoleColor.color(f"{battery.time_left} hours", ConsoleColor.YELLOW)
+        time_str: str = ConsoleColor.color(f"~{battery.time_left} hours", ConsoleColor.YELLOW)
 
         Console.print_aligned(f"Battery {prct_str}, {time_str} of usage left", Alignment.Center)
 

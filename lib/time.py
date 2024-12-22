@@ -1,8 +1,8 @@
 from typing import Self
 from dataclasses import dataclass
 
-SECS_IN_MINUTE: int = 60
-SECS_IN_HOUR: int = 3600
+SECS_IN_MIN: int = 60
+MINS_IN_HOUR: int = 60
 
 @dataclass
 class Time:
@@ -11,13 +11,10 @@ class Time:
     hours: int
 
     def from_seconds(seconds: int) -> Self:
-        hours: int = seconds // SECS_IN_HOUR
-        seconds -= hours * SECS_IN_HOUR
+        minutes, seconds = divmod(seconds, SECS_IN_MIN)
+        hours, minutes = divmod(minutes, MINS_IN_HOUR)
 
-        minutes: int = seconds // SECS_IN_MINUTE
-        seconds -= minutes * SECS_IN_MINUTE
-
-        return Time(seconds, minutes, hours)
+        return Time(seconds=seconds, minutes=minutes, hours=hours)
     
     def from_minutes(minutes: int) -> Self:
         seconds: int = minutes * SECS_IN_HOUR
