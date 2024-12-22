@@ -12,8 +12,7 @@ def main(argc, argv):
         while (line := input("Enter next line of details (leave blank to exit): ")) != "":
            details.append(line)
         
-        task: Task = Task(title, details)
-        task.insert()
+        Task.insert(title, details)
         
         Console.clear()
         main(0, [])

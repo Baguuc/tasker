@@ -1,71 +1,56 @@
 import json
+import sqlite3 as sqlite
+from glob import glob
 from typing import Self
 from pathlib import Path
 from lib.console import ConsoleColor
 from dataclasses import dataclass
 
-TASKS_FILE_PATH: Path = Path("/home/baguuc/.todo_tasks")
+home_path: str = str(Path.home())
+db_conn_str: str = f"{home_path}/todo_tasks.db"
+db_conn = sqlite.connect(db_conn_str)
+
+cursor = db_conn.cursor()
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS tasks (
+	id INTEGER PRIMARY KEY,
+	title TEXT,
+	details TEXT,
+    completed INTEGER(1)
+);
+""")
+db_conn.commit()
 
 @dataclass
 class Task:
+    _id: int
     title: str
     details: list[str]
-
-    def mark_current_done():
-        all_tasks: list[Task] = Task.get_all()
-        try:
-            all_tasks.pop(0)
-        except:
-            pass
-        as_dict: list[dict] = list(map(lambda item: item.__dict__, all_tasks))
-
-        with open(TASKS_FILE_PATH, "w") as f:
-            dumped: str = json.dumps(as_dict)
-            f.write(dumped)
     
     def get_current() -> Self:
-        all_tasks: list[Task] = Task.get_all()
-
-        if len(all_tasks) == 0:
-            return Task("Chill out", [])
-
-        current_task: Task = all_tasks[0]
-
-        return current_task
-    
-    def get_all() -> list[Self]:
-        tasks: list[Self] = []
-
-        # create file, pass if already exist
-        if not TASKS_FILE_PATH.exists():
-            TASKS_FILE_PATH.touch()
+        sql: str = "SELECT id, title, details FROM tasks WHERE completed = 0 ORDER BY id LIMIT 1;"
+        res = cursor.execute(sql)
+        row: tuple = res.fetchone()
         
-        with open(TASKS_FILE_PATH, "r") as f:
-            loaded: dict = {}
+        if row == None:
+            return Task(-1, "Chill out", [])
 
-            try:
-                loaded = json.load(f)
-            except:
-                print(ConsoleColor.color(ConsoleColor.RED, "Cannot load the JSON data."))
-                exit()
+        task: Task = Task(row[0], row[1], row[2].split("\n"))
+        
+        return task    
 
-            tasks = list(
-                map(
-                    lambda item: Task(
-                        item["title"], 
-                        item["details"]
-                    ),
-                    loaded
-                )
-            )
+    def insert(title: str, details: str):
+        details: str = "\n".join(details)
+        
+        sql: str = "INSERT INTO tasks (title, details, completed) VALUES (?, ?, 0);"
+        cursor.execute(sql, (title, details))
 
-        return tasks
-
-    def insert(self):
-        all_tasks: list[Self] = Task.get_all()
-        all_tasks.append(self)
-        as_dict: list[dict] = list(map(lambda item: item.__dict__, all_tasks))               
-        with open(TASKS_FILE_PATH, "w") as f:
-            dumped: str = json.dumps(as_dict)
-            f.write(dumped)
+        db_conn.commit()
+    
+    def mark_current_done():
+        sql: str = "UPDATE tasks SET completed = 1 WHERE id = ?;"
+        current_task: Task = Task.get_current()
+        cursor.execute(sql, (current_task._id,))
+        
+        db_conn.commit()
 
