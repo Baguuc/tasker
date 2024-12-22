@@ -14,10 +14,15 @@ class ConsoleColor:
     BOLD: str = '\033[1m'
     ENDC: str = '\033[0m'
 
-    def color(s: str, color_code: str) -> str:
-        colored: str = f"{color_code}{s}{ConsoleColor.ENDC}"
-        
-        return colored
+    def color(s: str, color_code: str | list[str]) -> str:
+        if type(color_code):
+            color_codes_str: str = "".join(color_code)
+            
+            return f"{color_codes_str}{s}{ConsoleColor.ENDC}"
+        elif type(color_code):
+            return f"{color_code}{s}{ConsoleColor.ENDC}"
+        else:
+            return s
 
 class Alignment(Enum):
     Left = auto()
