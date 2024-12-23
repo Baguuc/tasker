@@ -38,13 +38,43 @@ class Task:
         task: Task = Task(row[0], row[1], row[2].split("\n"))
         
         return task    
+    
+    def select_one(_id: int) -> Self:
+        sql: str = "SELECT id, title, details FROM tasks WHERE id = ?;"
+        res = cursor.execute(sql, (_id,))
+        row: tuple = res.fetchone()
 
-    def insert(title: str, details: str):
+        if row == None:
+            raise ValueException("A task with this id do not exist.")
+
+        return Task(
+            row[0],
+            row[1],
+            row[2].split("\n")
+        )
+    
+    def insert(title: str, details: list[str]):
         details: str = "\n".join(details)
         
         sql: str = "INSERT INTO tasks (title, details, completed) VALUES (?, ?, 0);"
         cursor.execute(sql, (title, details))
 
+        db_conn.commit()
+    
+    def update(_id: int, title: str, details: list[str]):
+        details: str = "\n".join(details)
+        
+        try:
+            current_data: str = Task.select_one(_id)
+        except ValueError:
+            raise ValueError("This details do not exist")
+
+        sql: str = "UPDATE tasks SET title = ?, details = ? WHERE id = ?;"
+
+        new_title: str = title or current_data.title
+        new_details: str = details or current_data.details
+
+        cursor.execute(sql, (new_title, new_details, _id))
         db_conn.commit()
     
     def mark_current_done():

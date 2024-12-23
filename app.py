@@ -13,7 +13,7 @@ def main(argc, argv):
            details.append(line)
         
         Task.insert(title, details)
-        
+
         Console.clear()
         main(0, [])
         
@@ -23,6 +23,42 @@ def main(argc, argv):
         Task.mark_current_done()
         Console.clear()
 
+        main(0, [])
+        exit()
+    
+    elif argc == 3 and argv[0] == "tasks" and argv[1] == "update":
+        try:
+            _id: int = int(argv[2])
+        except:
+            print("The id has to be numeric")
+            exit()
+        
+        current_data: Task = Task.select_one(_id)
+        print(ConsoleColor.color(current_data.title, ConsoleColor.YELLOW))
+        title: str = input("Enter new title of the task: ")
+        details: list[str] = []
+        
+        linei: int = 0
+        try:
+            print(ConsoleColor.color(current_data.details[linei], ConsoleColor.YELLOW))
+        except:
+            pass
+
+        line = input("Enter next line of new details (leave blank to exit): ")
+        
+        while line != "":
+            linei += 1
+            details.append(line)
+
+        
+            try:
+                print(ConsoleColor.color(current_data.details[linei], ConsoleColor.YELLOW))
+            except:
+                pass
+
+            line = input("Enter next line of new details (leave blank to exit): ")
+        Task.update(_id, title, details)
+        Console.clear()
         main(0, [])
         exit()
 
