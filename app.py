@@ -1,4 +1,3 @@
-from lib.battery import BatteryInfo
 from lib.console import ConsoleColor, Console, Alignment
 from lib.tasks import Task
 import sys
@@ -61,19 +60,6 @@ def main(argc, argv):
         Console.clear()
         main(0, [])
         exit()
-
-    battery: BatteryInfo = BatteryInfo.get_data()
-
-    if battery.plugged_in:
-        info_str: str = ConsoleColor.color("Battery on charge", ConsoleColor.YELLOW)
-        Console.print_aligned(info_str, Alignment.Center)
-    else:
-        prct_str: str = ConsoleColor.color(f"{battery.percentage:.0f}%", ConsoleColor.YELLOW)
-        time_str: str = ConsoleColor.color(f"~{battery.time_left} hours", ConsoleColor.YELLOW)
-
-        Console.print_aligned(f"Battery {prct_str}, {time_str} of usage left", Alignment.Center)
-
-    print()
 
     current_task: Task = Task.get_current()
     Console.print_aligned(
