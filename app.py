@@ -71,9 +71,9 @@ def main(argc, argv):
 
 def run(argc, argv):
     commands_map: dict[tuple, callable] = {
-        ("tasks", "insert"): insert,
-        ("tasks", "done"): done,
-        ("tasks", "update"): update
+        ("insert",): insert,
+        ("done",): done,
+        ("update",): update
     }
     command: callable = commands_map.get(tuple(argv), main)
     command(argc, argv)
