@@ -1,14 +1,12 @@
 import json
-import sqlite3 as sqlite
 from glob import glob
 from typing import Self
-from pathlib import Path
-from lib.console import ConsoleColor
+import sqlite3 as sqlite
 from dataclasses import dataclass
+from lib.console import ConsoleColor
+from lib.database import get_database_connection
 
-home_path: str = str(Path.home())
-db_conn_str: str = f"{home_path}/todo_tasks.db"
-db_conn = sqlite.connect(db_conn_str)
+db_conn: sqlite.Connection = get_database_connection()
 
 cursor = db_conn.cursor()
 cursor.execute("""

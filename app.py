@@ -1,8 +1,9 @@
 from lib.console import ConsoleColor, Console, Alignment
+from lib.database import get_database_connection
+from lib.migrations import migrate
 from lib.tasks import Task
 import sys
 import os
-
 
 def insert():
     title: str = input("Enter title of the task: ")
@@ -70,6 +71,9 @@ def main():
 
 
 def run(argc, argv):
+    db_conn: sqlite.Connection = get_database_connection()
+    migrate(".", db_conn)
+
     match tuple(argv):
         case ("insert",): insert()
         case ("done",): done()
