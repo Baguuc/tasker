@@ -4,7 +4,7 @@ import sys
 import os
 
 
-def insert(argc, argv):
+def insert():
     title: str = input("Enter title of the task: ")
     details: list[str] = []
 
@@ -14,13 +14,13 @@ def insert(argc, argv):
     Task.insert(title, details)
 
 
-def done(argc, argv):
+def done():
     Task.mark_current_done()
 
 
-def update(argc, argv):
+def update(_id: str):
     try:
-        _id: int = int(argv[2])
+        _id: int = int(_id)
     except:
         print("The id has to be numeric")
         exit()
@@ -53,7 +53,7 @@ def update(argc, argv):
     Task.update(_id, title, details)
 
 
-def main(argc, argv):
+def main():
     current_task: Task = Task.get_current()
     Console.print_aligned(
         ConsoleColor.color(
@@ -70,16 +70,14 @@ def main(argc, argv):
 
 
 def run(argc, argv):
-    commands_map: dict[tuple, callable] = {
-        ("insert",): insert,
-        ("done",): done,
-        ("update",): update
-    }
-    command: callable = commands_map.get(tuple(argv), main)
-    command(argc, argv)
+    match tuple(argv):
+        case ("insert",): insert()
+        case ("done",): done()
+        case ("update", _id): update(_id)
+        case _: main()
 
 if __name__ == "__main__":
-    sys.argv.pop(0)
+    _ = sys.argv.pop(0)
     argv: list[str] = sys.argv
     argc: int = len(sys.argv)
 
