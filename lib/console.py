@@ -2,6 +2,8 @@ import os
 import re
 import subprocess
 from enum import Enum, auto
+from lib.keyboard import get_char_input
+
 
 class ConsoleColor:
     CYAN: str = '\033[96m'
@@ -72,3 +74,17 @@ class Console:
     def clear():
         os.system('cls' if os.name == 'nt' else 'clear')
 
+class Screen:
+    def render(lines: list[str], on_key_down: callable):
+        rowcount: int = len(lines)
+        for line in lines:
+            print(f"\r{line}\n", sep="", end="")
+        
+        _continue, lines = on_key_down(get_char_input(), lines)
+        
+        if not _continue:
+            print(f"\033[{rowcount}A", sep="", end="")
+            return
+        
+        print(f"\033[{rowcount}A", sep="", end="")
+        Screen.render(lines, on_key_down)
