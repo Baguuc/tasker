@@ -55,6 +55,18 @@ class ConsoleColor:
         else:
             return s
 
+
+    def strip(s: str) -> str:
+        COLOR_CODE_PATTERN = r'(\x1B(?:\[([0-9]{1,2}(;[0-9]{1,2})?)m|))'       
+        color_occurences: list = re.findall(COLOR_CODE_PATTERN, s)
+                
+
+        for occurence in color_occurences:
+            s = s.replace(occurence[0], "")
+
+        return s
+
+
 class Alignment(Enum):
     Left = auto()
     Center = auto()
@@ -76,15 +88,8 @@ class Console:
             return
 
         column_count: int = Console.get_max_columns()
-        slen: int = len(s)
-        COLOR_CODE_PATTERN = r'(\x1B(?:\[([0-9]{1,2}(;[0-9]{1,2})?)m|))'       
-        color_occurences: list = re.findall(COLOR_CODE_PATTERN, s)
-        total_color_len: int = 0
-
-        for occurence in color_occurences:
-            total_color_len += len(occurence[0])
-
-        slen -= total_color_len
+        tmp: str = ConsoleColor.strip(s)
+        slen: int = len(tmp)
 
         if alignment == Alignment.Center:
             pad_times: int = (column_count - slen) // 2
