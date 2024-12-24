@@ -9,6 +9,11 @@ migrations: list[str] = [
 	    details TEXT,
         completed INTEGER(1)
     );
+    """,
+    """
+    ALTER TABLE tasks ADD COLUMN current INTEGER(1);
+    UPDATE tasks SET current = 0 WHERE id NOT IN (SELECT id FROM tasks ORDER BY id LIMIT 1);
+    UPDATE tasks SET current = 1 WHERE id IN (SELECT id FROM tasks ORDER BY id LIMIT 1);
     """
 ]
 

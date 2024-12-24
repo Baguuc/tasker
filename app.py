@@ -54,6 +54,20 @@ def update(_id: str):
     Task.update(_id, title, details)
 
 
+def change_current(_id: str):
+    try:
+        _id: int = int(_id)
+    except:
+        print("The id has to be numeric")
+        exit()
+
+    try:
+        Task.change_current(_id)
+    except:
+        print("This task do not exist")
+        exit()
+
+
 def main():
     current_task: Task = Task.get_current()
     Console.print_aligned(
@@ -78,6 +92,7 @@ def run(argc, argv):
         case ("insert",): insert()
         case ("done",): done()
         case ("update", _id): update(_id)
+        case ("set-current", _id): change_current(_id)
         case _: main()
 
 if __name__ == "__main__":

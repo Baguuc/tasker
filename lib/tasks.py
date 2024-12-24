@@ -24,21 +24,32 @@ class Task:
     _id: int
     title: str
     details: list[str]
+    current: bool
     
     def get_current() -> Self:
-        sql: str = "SELECT id, title, details FROM tasks WHERE completed = 0 ORDER BY id LIMIT 1;"
+        sql: str = "SELECT id, title, details, current FROM tasks WHERE completed = 0 AND current = 1;"
         res = cursor.execute(sql)
         row: tuple = res.fetchone()
         
         if row == None:
-            return Task(-1, "Chill out", [])
+            return Task(
+                0,
+                "Chill out",
+                [],
+                True
+            )
 
-        task: Task = Task(row[0], row[1], row[2].split("\n"))
+        task: Task = Task(
+            row[0],
+            row[1],
+            row[2].split("\n"),
+            bool(row[3])
+        )
         
         return task    
     
     def select_one(_id: int) -> Self:
-        sql: str = "SELECT id, title, details FROM tasks WHERE id = ?;"
+        sql: str = "SELECT id, title, details, current FROM tasks WHERE id = ?;"
         res = cursor.execute(sql, (_id,))
         row: tuple = res.fetchone()
 
@@ -48,7 +59,8 @@ class Task:
         return Task(
             row[0],
             row[1],
-            row[2].split("\n")
+            row[2].split("\n"),
+            bool(row[3])
         )
     
     def insert(title: str, details: list[str]):
@@ -74,7 +86,17 @@ class Task:
 
         cursor.execute(sql, (new_title, new_details, _id))
         db_conn.commit()
-    
+
+    def change_current(_id: int):
+        current_task: Task = Task.get_current()
+        sql: str = "UPDATE tasks SET current = 0 WHERE id = ?;";
+        db_conn.execute(sql, (current_task._id,))
+        
+        sql: str = "UPDATE tasks SET current = 1 WHERE id = ?;";
+        db_conn.execute(sql, (_id,))
+        
+        db_conn.commit()
+        
     def mark_current_done():
         sql: str = "UPDATE tasks SET completed = 1 WHERE id = ?;"
         current_task: Task = Task.get_current()
