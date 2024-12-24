@@ -205,23 +205,38 @@ def get_keyboard_event_file() -> str:
     return event_file_path
 
 
-def get_char_input_raw_code() -> int:
+def get_char_input_raw_code(double=False) -> int:
     FORMAT: str = "llHHI"
     EVENT_SIZE: int = struct.calcsize(FORMAT)
 
-    with open(get_keyboard_event_file(), "rb") as f:
-        event = f.read(EVENT_SIZE)
-        (tv_sec, tv_usec, _type, code, value) = struct.unpack(FORMAT, event)
+    def read() -> str:
+        with open(get_keyboard_event_file(), "rb") as f:
+            event = f.read(EVENT_SIZE)
+            (tv_sec, tv_usec, _type, code, value) = struct.unpack(FORMAT, event)
+        
+        return value
     
-    return value
+    if double:
+        key1: int = read()
+        key2: int = read()
 
+        if key1 == key2:
+            return key1
+        
+        return None
+    
+    return read()
 
-def get_char_input_raw() -> str:
-    code: int = get_char_input_raw_code()
+def get_char_input_raw(double=False) -> str:
+    code: int|None = get_char_input_raw_code(double=double)
+
+    if code == None:
+        return None
+
     key_char: str = codes_names[code]
     
     return key_char
 
 
-def get_char_input() -> str:
-    return get_char_input_raw()
+def get_char_input(double=False) -> str:
+    return get_char_input_raw(double=double)
