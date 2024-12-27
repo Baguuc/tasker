@@ -1,7 +1,8 @@
-from lib.console import ConsoleColor, Console, Alignment
+from lib.console import ConsoleColor, Console, Alignment, Screen
 from lib.database import get_database_connection
 from lib.migrations import migrate
 from lib.tasks import Task
+from time import sleep
 import sys
 import os
 
@@ -16,7 +17,67 @@ def insert():
 
 
 def done():
-    Task.mark_current_done()
+    tasks: list[Task] = Task.select_all_uncompleted()
+    lines: list[str] = list(map(lambda task: task.title, tasks))
+    callbacks: list[callable] = list(map(lambda task: lambda: Task.mark_done(task), tasks))
+    state: dict = {
+        "current_line": 0
+    }
+
+    if len(tasks) == 0:
+        print("No tasks to mark done.")
+        return
+    
+
+    def get_current_line_idx():
+        return state["current_line"]
+    
+    
+    def set_current_line_idx(idx: int):
+        state["current_line"] = idx
+
+    
+    def set_current_line(new_idx: int):
+        current_line = get_current_line_idx()
+
+        lines[current_line] = ConsoleColor.strip(lines[current_line])
+        lines[new_idx] = ConsoleColor.color(lines[new_idx], [ConsoleColor.BG_YELLOW, ConsoleColor.BOLD])
+
+        set_current_line_idx(new_idx)
+    
+
+    set_current_line(0)
+    
+    
+    def move_down():
+        current_line_idx = get_current_line_idx()
+
+        if current_line_idx < len(lines) - 1:
+            set_current_line(current_line_idx + 1)
+    
+    
+    def move_up():
+        current_line_idx = get_current_line_idx()
+        
+        if current_line_idx > 0:
+            set_current_line(current_line_idx - 1)
+
+
+    def handle_keypress(_input, lines):
+        if _input == "arrow up": move_up()
+        if _input == "arrow down": move_down()
+        if _input == "enter":
+            Console.clear()
+            task = tasks[get_current_line_idx()]
+            Task.mark_done(task._id)
+            
+            print(f"Marked task {task.title} (id: {task._id}) as done.")
+            sleep(2)
+
+            return False, [] 
+        return True, lines
+
+    Screen.render(lines, handle_keypress)
 
 
 def update(_id: str):

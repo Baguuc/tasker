@@ -1,5 +1,6 @@
 import os
 import re
+from time import sleep
 import subprocess
 from enum import Enum, auto
 from lib.keyboard import get_char_input
