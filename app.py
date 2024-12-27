@@ -12,8 +12,14 @@ def insert():
 
     while (line := input("Enter next line of details (leave blank to exit): ")) != "":
         details.append(line)
-        
-    Task.insert(title, details)
+   
+    current: str = input("Mark this task as done? (y/N)")
+    if current.lower() == "y":
+        current = True
+    else:
+        current = False
+
+    Task.insert(title, details, current)
 
 
 def done():

@@ -78,11 +78,12 @@ class Task:
             bool(row[3])
         )
     
-    def insert(title: str, details: list[str]):
+    def insert(title: str, details: list[str], current: bool):
         details: str = "\n".join(details)
-        
-        sql: str = "INSERT INTO tasks (title, details, completed) VALUES (?, ?, 0);"
-        cursor.execute(sql, (title, details))
+        current = 1 if current else 0
+
+        sql: str = "INSERT INTO tasks (title, details, completed, current) VALUES (?, ?, 0, ?);"
+        cursor.execute(sql, (title, details, current))
 
         db_conn.commit()
     
