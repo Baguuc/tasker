@@ -46,8 +46,23 @@ class Task:
             bool(row[3])
         )
         
-        return task    
-    
+        return task
+
+
+    def select_all_uncompleted() -> list[Self]:
+        sql: str = "SELECT id, title, details, current FROM tasks WHERE completed = 0;"
+        res = cursor.execute(sql)
+        rows: list[tuple] = res.fetchall()
+        tasks: list[Task] = list(
+            map(
+                lambda item: Task(item[0], item[1], item[2], item[3]),
+                rows
+            )
+        )
+
+        return tasks
+
+
     def select_one(_id: int) -> Self:
         sql: str = "SELECT id, title, details, current FROM tasks WHERE id = ?;"
         res = cursor.execute(sql, (_id,))
@@ -96,11 +111,9 @@ class Task:
         db_conn.execute(sql, (_id,))
         
         db_conn.commit()
-        
-    def mark_current_done():
+    
+    def mark_done(_id):
         sql: str = "UPDATE tasks SET completed = 1 WHERE id = ?;"
-        current_task: Task = Task.get_current()
-        cursor.execute(sql, (current_task._id,))
+        cursor.execute(sql, (_id,))
         
         db_conn.commit()
-
